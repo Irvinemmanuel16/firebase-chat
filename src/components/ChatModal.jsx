@@ -32,6 +32,7 @@ export default function ChatModal({ show, onClose }) {
         createdAt: firestore.FieldValue.serverTimestamp(),
       });
     }
+    onClose();
     setSelectedContact({});
   };
 

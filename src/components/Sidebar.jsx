@@ -27,7 +27,7 @@ export default function Sidebar() {
     <>
       <Container>
         <Header>
-          <UserAvatar src={user?.profilePic} onClick={() => auth.signOut()} />
+          <UserAvatar src={user?.photoURL} onClick={() => auth.signOut()} />
           <IconsContainer>
             <IconButton>
               <ChatIcon />

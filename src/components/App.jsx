@@ -45,7 +45,6 @@ function App() {
 const Container = styled.div`
   display: flex;
   width: 100%;
-  overflow-y: hidden;
 `;
 
 export default App;

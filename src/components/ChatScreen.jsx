@@ -11,17 +11,13 @@ import MicIcon from '@material-ui/icons/Mic';
 import Message from './Message';
 import TimeAgo from 'timeago-react';
 
-export default function ChatScreen({ id }) {
+export default function ChatScreen({ id, userData, contact }) {
   const [user] = useAuthState(auth);
   const [messageText, setMessageText] = useState('');
   const endOfMessagesRef = useRef();
+  const userRef = db.collection('users').doc(user?.uid);
   const chatsRef = db.collection('chats').doc(id);
   const messagesRef = chatsRef.collection('messages');
-  const contactsRef = db
-    .collection('users')
-    .doc(user.uid)
-    .collection('contacts');
-  const [contact] = useCollectionData(contactsRef);
   const [messages] = useCollectionData(messagesRef.orderBy('sendedAt', 'asc'), {
     idField: 'id',
   });
@@ -32,6 +28,9 @@ export default function ChatScreen({ id }) {
       text: messageText,
       senderId: user.uid,
       sendedAt: firestore.FieldValue.serverTimestamp(),
+    });
+    userRef.update({
+      lastSeen: firestore.FieldValue.serverTimestamp(),
     });
     setMessageText('');
   };
@@ -46,11 +45,11 @@ export default function ChatScreen({ id }) {
   return (
     <Container>
       <Header>
-        <Avatar />
+        <ProfilPic src={contact?.profilePic} />
         <HeaderInformation>
-          <h3>{contact?.[0]?.name}</h3>
-          {contact?.[0]?.lastSeen?.toDate() ? (
-            <TimeAgo datetime={contact?.[0]?.lastSeen?.toDate()} />
+          <h3>{contact?.name}</h3>
+          {userData?.lastSeen?.toDate() ? (
+            <TimeAgo datetime={userData?.lastSeen?.toDate()} />
           ) : (
             'Unavaliable'
           )}
@@ -65,7 +64,7 @@ export default function ChatScreen({ id }) {
         </HeaderIcons>
       </Header>
       <MessageContainer>
-        {messages?.map((message, index) => (
+        {messages?.map(message => (
           <Message key={message.id} message={message} />
         ))}
         <EndOfMessage ref={endOfMessagesRef} />
@@ -87,6 +86,8 @@ export default function ChatScreen({ id }) {
     </Container>
   );
 }
+
+const ProfilPic = styled(Avatar)``;
 
 const Container = styled.div``;
 
@@ -119,7 +120,7 @@ const HeaderIcons = styled.div``;
 const MessageContainer = styled.div`
   padding: 30px;
   background-color: #e5ded8;
-  min-height: 90vh;
+  min-height: 500px;
 `;
 
 const EndOfMessage = styled.div``;

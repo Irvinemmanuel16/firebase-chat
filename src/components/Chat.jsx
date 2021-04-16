@@ -17,8 +17,8 @@ export default function Chat({ id, contactEmail }) {
   return (
     <Link to={`/chat/${id}`} style={{ textDecoration: 'none', color: 'black' }}>
       <Container>
-        {contact?.profilePic ? (
-          <UserAvatar src={contact.profilePic} />
+        {contact?.[0]?.profilePic ? (
+          <UserAvatar src={contact?.[0]?.profilePic} />
         ) : (
           <UserAvatar>{contact?.[0]?.name?.[0]}</UserAvatar>
         )}
