@@ -13,7 +13,9 @@ export default function Message({ message }) {
       <TypeOfMessage>
         {message?.text}
         <Timestamp>
-          {message?.sendedAt ? moment(message?.sendedAt).format('LT') : '...'}
+          {message?.sendedAt !== null
+            ? moment(message?.sendedAt?.toDate().getTime()).format('LT')
+            : '...'}
         </Timestamp>
       </TypeOfMessage>
     </Container>

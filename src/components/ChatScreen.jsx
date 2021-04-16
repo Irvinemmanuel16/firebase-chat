@@ -9,12 +9,12 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import MicIcon from '@material-ui/icons/Mic';
 import Message from './Message';
+import TimeAgo from 'timeago-react';
 
 export default function ChatScreen({ id }) {
   const [user] = useAuthState(auth);
   const [messageText, setMessageText] = useState('');
   const endOfMessagesRef = useRef();
-  const usersRef = db.collection('users').doc(user?.uid);
   const chatsRef = db.collection('chats').doc(id);
   const messagesRef = chatsRef.collection('messages');
   const contactsRef = db
@@ -33,12 +33,6 @@ export default function ChatScreen({ id }) {
       senderId: user.uid,
       sendedAt: firestore.FieldValue.serverTimestamp(),
     });
-    chatsRef.update({
-      createdAt: firestore.FieldValue.serverTimestamp(),
-    });
-    usersRef.update({
-      lastSeen: firestore.FieldValue.serverTimestamp(),
-    });
     setMessageText('');
   };
 
@@ -55,6 +49,11 @@ export default function ChatScreen({ id }) {
         <Avatar />
         <HeaderInformation>
           <h3>{contact?.[0]?.name}</h3>
+          {contact?.[0]?.lastSeen?.toDate() ? (
+            <TimeAgo datetime={contact?.[0]?.lastSeen?.toDate()} />
+          ) : (
+            'Unavaliable'
+          )}
         </HeaderInformation>
         <HeaderIcons>
           <IconButton>
